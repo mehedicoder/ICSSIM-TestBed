@@ -1,16 +1,14 @@
 # ICSSIM
-## Credits & Citation
-This project is based on the ICSSIM framework and its sample bottle-filling
-testbed, created by Alireza Dehlaghi-Ghadim, Ali Balador, Mahshid Helali
-Moghadam, Hans Hansson, and Mauro Conti.
+
+## Credits and citation
+
+This project uses the ICSSIM framework and its sample bottle-filling testbed. It was created by Alireza Dehlaghi-Ghadim, Ali Balador, Mahshid Helali Moghadam, Hans Hansson, and Mauro Conti.
 
 - Original repository: https://github.com/AlirezaDehlaghi/ICSSIM
-- Paper: A. Dehlaghi-Ghadim, A. Balador, M. Helali Moghadam, H. Hansson,
-  and M. Conti, "ICSSIM — A framework for building industrial control systems
-  security testbeds," *Computers in Industry*, vol. 148, 103906, 2023.
-  https://doi.org/10.1016/j.compind.2023.103906
+- Paper: A. Dehlaghi-Ghadim, A. Balador, M. Helali Moghadam, H. Hansson, and M. Conti, “ICSSIM — A framework for building industrial control systems security testbeds,” *Computers in Industry*, vol. 148, 103906, 2023.
+- DOI: https://doi.org/10.1016/j.compind.2023.103906
 
-If you use this work, please cite the original paper:
+If you use this work, cite the original paper:
 
 ```bibtex
 @article{DehlaghiGhadim2023ICSSIM,
@@ -23,99 +21,123 @@ If you use this work, please cite the original paper:
   doi     = {10.1016/j.compind.2023.103906}
 }
 ```
-# Sample Bottle Filling Factory
-A water tank repository is used to fill bottles during the bottle-filling factory control process. The below figure shows the overall scenario including process and hardware. The proposed control process consists of two main hardware zones, each managed by a standalone PLC, called PLC-1 and PLC-2. The water tank and valves are controlled by PLC-1. The conveyor belts are controlled by PLC-2 to switch out filled bottles with empty ones.
+
+# Sample bottle-filling factory
+
+The factory uses a water tank to fill bottles. The process has two hardware zones, each controlled by its own PLC:
+
+- PLC-1 controls the water tank and valves.
+- PLC-2 controls the conveyor belts, which move filled bottles out and empty bottles in.
 
 ![The Sample bottle filling factory](Images/physical_process.png)
-An overview of the bottle filling factory network architecture is presented below. In the proposed network architecture, the first three layers of the Purdue reference architecture are realized. In Docker container technology, shared memory is used to implement the hard wired connection between Tiers 1 and 2. To simulate the network between Tiers 2 and 3, a Local Area Network (LAN) is created in a simulation environment. The attacker is also assumed to have access to this network as a malicious HMI, therefore we consider this node as an additional attacker in this architecture.
 
+The network uses the first three layers of the Purdue reference architecture. Docker shared memory connects Tiers 1 and 2. A simulated LAN connects Tiers 2 and 3. The attacker is assumed to have access to this LAN as a malicious HMI, so it is included as an additional attacker node.
 
 ![Network architecture for the sample bottle filling plant](Images/sample_architecture.png)
 
-# Run a Sample Bottle Filling Factory
+# Run the sample bottle-filling factory
 
-## Run in Docker container Environment
+## Run with Docker
 
-### Pre steps
-Make sure that you have already installed the following applications and tools.
+### Before you start
 
-* git
-* Docker (on Windows: Docker Desktop, kept up to date)
-* Docker-Compose (included in Docker Desktop as `docker compose`)
+Install:
 
-### Getting ICSSIM and the sample project
-Clone the project into your local directory using following git command.
-```
+- git
+- Docker (on Windows, use the latest Docker Desktop)
+- Docker Compose (included in Docker Desktop as `docker compose`)
+
+### Get ICSSIM
+
+Clone the repository:
+
+```bash
 git clone https://github.com/AlirezaDehlaghi/ICSSIM ICSSIM
 ```
 
-Check the file [Configs.py](src/Configs.py) and make sure that the EXECUTION_MODE variable is set to EXECUTION_MODE_DOCKER as follows:
-```
+In `src/Configs.py`, set `EXECUTION_MODE` to `EXECUTION_MODE_DOCKER`:
+
+```python
 EXECUTION_MODE = EXECUTION_MODE_DOCKER
 ```
 
-### Running the sample project
-Run the sample project using the prepared script
-[init.sh](deployments/init.sh)
-```
+### Start the sample project
+
+Run the prepared script:
+
+```bash
 cd ICSSIM/deployments
 ./init.sh
 ```
-On Windows (PowerShell), see [Dataset Capture Manual](#dataset-capture-manual-windows--docker-desktop) below for the equivalent start sequence.
 
-### Check successful running
-If *init.sh* commands runs to the end, it will show the status of all containers. In the case that all containers are 'Up', then project is running successfully.
-You could also see the status of containers with following command:
-```
+On Windows PowerShell, use the start sequence in [Dataset Capture Manual (Windows + Docker Desktop)](#dataset-capture-manual-windows--docker-desktop).
+
+### Check that it started
+
+If `init.sh` finishes, it should show the status of all containers. The project is running if all containers show `Up`.
+
+You can also check with:
+
+```bash
 sudo docker-compose ps
 ```
 
-### Operating the control system and apply cyberattacks
-In the directory [deployments](deployments/) there exist some scripts such as [hmi1.sh](deployments/hmi1.sh), [hmi2.sh](deployments/hmi2.sh) or [attacker.sh](deployments/attacker.sh) which can attach user to the container.
+### Use the control system and run attacks
+
+The `deployments` directory has scripts that connect you to containers, including:
+
+- `deployments/hmi1.sh`
+- `deployments/hmi2.sh`
+- `deployments/attacker.sh`
 
 ## Run in GNS3
-To run the ICSSIM and the sample Bottle Filling factory clone the project and use the portable GNS3 file to create a new project in GNS3.
 
-### Getting ICSSIM and the sample project
-Clone the project into your local directory using following git command.
-```
+Clone the project:
+
+```bash
 git clone https://github.com/AlirezaDehlaghi/ICSSIM ICSSIM
 ```
 
-### Import Project in GNS3
-Import the portable project ([deployments/GNS3/ICSSIM-GNS3-Portable.gns3project](deployments/GNS3/ICSSIM-GNS3-Portable.gns3project)) using menu **File->Import Portable Project**
+Import the portable project, `deployments/GNS3/ICSSIM-GNS3-Portable.gns3project`, using **File → Import Portable Project** in GNS3.
 
-## RUN as a single Python project
+## Run as a single Python project
 
-> **Note:** local mode runs all components in one Python process over `127.0.0.1`. It is useful for testing the logic, but it does **not** produce a realistic network (no separate IPs, MACs or ARP) and is **not** used for dataset capture. Use Docker mode for datasets.
+> **Note:** Local mode runs everything in one Python process over `127.0.0.1`. It is useful for testing the logic, but it does not create a realistic network: there are no separate IP addresses, MAC addresses, or ARP. Local mode is not used for dataset capture. Use Docker mode to capture datasets.
 
-### Pre steps
-Make sure that you have already installed the following applications and tools.
+### Before you start
 
-* git
-* Python (3.11 or 3.12 recommended)
-* pip
+Install:
 
-Make sure that you installed required packages: pyModbusTCP, python-memcached
-```
+- git
+- Python (3.11 or 3.12 recommended)
+- pip
+
+Install the required packages:
+
+```bash
 pip install pyModbusTCP
 pip install python-memcached
 ```
 
-### Getting ICSSIM and the sample project
-Clone the project into your local directory using following git command.
-```
+### Get ICSSIM and set the mode
+
+Clone the repository:
+
+```bash
 git clone https://github.com/AlirezaDehlaghi/ICSSIM ICSSIM
 ```
 
-Check the file [Configs.py](src/Configs.py) and make sure that the EXECUTION_MODE variable is set to EXECUTION_MODE_LOCAL as follows:
-```
+In `src/Configs.py`, set `EXECUTION_MODE` to `EXECUTION_MODE_LOCAL`:
+
+```python
 EXECUTION_MODE = EXECUTION_MODE_LOCAL
 ```
 
-### Running the sample project
-Run the sample project using the running start.py (on Windows use `python` instead of `python3`)
-```
+### Start the project
+
+Run `start.py`. On Windows, use `python` instead of `python3`.
+
+```bash
 cd ICSSIM/src
 python3 start.py
 ```
@@ -124,29 +146,39 @@ python3 start.py
 
 # Dataset Capture Manual (Windows + Docker Desktop)
 
-This section describes how to produce a **benign** dataset (for training) and a **mixed benign + attack** dataset (for testing) from the ICSSIM Docker testbed, and how to convert the captures to CSV with `icssim_to_csv.py`.
+This section explains how to capture:
 
-All commands are for **PowerShell**, run from `ICSSIM\deployments` unless stated otherwise.
+- **Benign traffic** for training.
+- **Benign and attack traffic** for testing.
 
-## 0. Overview
+It also explains how to convert the captures to CSV with `icssim_to_csv.py`.
+
+Run the commands in PowerShell from `ICSSIM\deployments`, unless a step says otherwise.
+
+## 0. Capture plan
 
 | # | Capture | Purpose | Length | Output |
 |---|---|---|---|---|
 | 1 | Benign | Train the model on normal behaviour | 2 h | `benign_2h.pcap` |
-| 2 | Mixed (benign + attacks) | Test detection with labelled attacks | ~2 h | `mixed_2h.pcap` + `attack_log.csv` |
+| 2 | Mixed (benign + attacks) | Test detection with labelled attacks | ~2 h | `mixed_2h.pcap` + `attacker_summary.csv` |
 | 3 | Benign (optional, another day) | Measure false alarms on unseen normal traffic | 30–60 min | `benign_val.pcap` |
 
-Network facts for the sample factory:
+### Sample factory network details
+
+These are the addresses observed on the `icsnet` bridge in a sample run. MAC addresses are regenerated each time the containers are rebuilt, so always refresh them with step 2.2.
 
 | Item | Value |
 |---|---|
 | Capture interface (bridge of `icsnet`) | `br_icsnet` (`192.168.0.1/24`) |
 | PLC1 / PLC2 | `192.168.0.11:502` / `192.168.0.12:502` |
 | HMI1 / HMI2 / HMI3 | `192.168.0.21` / `.22` / `.23` |
-| Attackers | `attacker`, `attackermachine`, `attackerremote` (IPs: see step 2.2) |
+| Attacker (interactive menu) | `attacker` → `192.168.0.42` |
+| Other attacker nodes | `attackermachine` → `192.168.0.41`, `attackerremote` → `192.168.0.43` |
 | Physical process link | `phynet` network + memcached (not captured) |
 
-Expected benign volume (from earlier runs, ≈ 90 Modbus packets/s):
+### Expected benign traffic volume
+
+These figures are from earlier runs, at about 90 Modbus packets per second.
 
 | | per 1 h | per 2 h |
 |---|---|---|
@@ -155,30 +187,49 @@ Expected benign volume (from earlier runs, ≈ 90 Modbus packets/s):
 | Total packets (incl. TCP ACKs) | ~0.5–1 M | ~1–2 M |
 | TCP sessions | ~7–8 | ~7–8 |
 
-## 1. Prepare (once per machine)
+## 1. Prepare the machine
+
+Do this once per machine.
 
 1. Update Docker Desktop to the latest version.
-2. Set `EXECUTION_MODE = EXECUTION_MODE_DOCKER` in `src\Configs.py`.
-3. Create the output folder:
+2. In `src\Configs.py`, set `EXECUTION_MODE = EXECUTION_MODE_DOCKER`.
+3. Create a folder for the captures:
+
    ```powershell
    mkdir C:\captures -Force
    ```
-4. Disable sleep for the capture duration: *Settings → System → Power → Sleep = Never*.
-5. Install Python dependencies for the converter:
+
+4. Disable sleep while capturing: *Settings → System → Power → Sleep = Never*.
+5. Install the converter’s Python packages:
+
    ```powershell
    pip install scapy pandas
    ```
-6. In `icssim_to_csv.py`, use streaming reads (large captures otherwise need several GB of RAM):
+
+6. In `icssim_to_csv.py`, use streaming reads. Large captures can otherwise need several GB of RAM.
+
+   Change:
+
    ```python
-   from scapy.all import IP, TCP, PcapReader      # instead of rdpcap
+   from scapy.all import IP, TCP, rdpcap
    ...
-   for pkt in PcapReader(pcap_path):              # instead of rdpcap(pcap_path)
+   for pkt in rdpcap(pcap_path):
+   ```
+
+   to:
+
+   ```python
+   from scapy.all import IP, TCP, PcapReader
+   ...
+   for pkt in PcapReader(pcap_path):
    ```
 
 ## 2. Start the network
 
-### 2.1 Start in the correct order (simulator first)
-If the PLCs start before the physical simulator (`pys`), they read empty sensor values and **PLC2 crashes** (`TypeError: 'NoneType' object is not subscriptable`).
+### 2.1 Start the simulator first
+
+Start the physical simulator (`pys`) before the PLCs. If the PLCs start first, they read empty sensor values and **PLC2 crashes** with `TypeError: 'NoneType' object is not subscriptable`.
+
 ```powershell
 cd C:\Users\<user>\PycharmProjects\ICSSIM\deployments
 docker compose down
@@ -187,17 +238,36 @@ Start-Sleep -Seconds 15
 docker compose up -d
 docker ps
 ```
-All ICSSIM containers must show `Up`: `pys`, `plc1`, `plc2`, `hmi1`, `hmi2`, `hmi3`, `attacker`, `attackermachine`, `attackerremote`.
 
-> After changing `Configs.py` or source code, rebuild: `docker compose up -d --build`.
+All ICSSIM containers should show `Up`:
 
-### 2.2 Record node addresses (for labelling)
+```text
+pys, plc1, plc2, hmi1, hmi2, hmi3, attacker, attackermachine, attackerremote
+```
+
+> After changing `Configs.py` or source code, rebuild with `docker compose up -d --build`.
+
+### 2.2 Record the node addresses
+
+Save the node addresses for labeling the data. MACs change on every rebuild, so capture them fresh each run:
+
 ```powershell
 docker inspect -f "{{.Name}} {{range .NetworkSettings.Networks}}{{.IPAddress}} {{.MacAddress}} {{end}}" plc1 plc2 hmi1 hmi2 hmi3 attacker attackermachine attackerremote > C:\captures\nodes.txt
 type C:\captures\nodes.txt
 ```
 
-## 3. Health checks (wait ~30 s after start)
+### 2.3 Create the attacker log folder
+
+The attacker writes its ground-truth log to `./logs/attack-logs/` inside the container. **This folder does not exist by default**, and without it the attacker fails to log an attack (and command injection crashes the container). Create it before running any attack:
+
+```powershell
+docker exec attacker sh -c "mkdir -p ./logs/attack-logs && chmod -R 777 ./logs"
+docker exec attacker sh -c "ls -la ./logs/attack-logs"
+```
+
+## 3. Check that the containers are healthy
+
+Wait about 30 seconds after starting the network, then check the logs:
 
 ```powershell
 docker logs pys  --tail 10
@@ -205,132 +275,202 @@ docker logs plc1 --tail 10
 docker logs plc2 --tail 10
 ```
 
-| Container | Healthy | Not healthy → fix |
+| Container | Healthy | If it is not healthy |
 |---|---|---|
-| `pys` | `Starting memcached`, `Created`, `started`; overflow / "water is wasting" warnings only occasionally | Constant stream of warnings → PLCs not controlling; restart with 2.1 |
-| `plc1` | No continuous `receive null value for tag` warnings | Restart with 2.1 |
-| `plc2` | No `Traceback` | Restart with 2.1 |
+| `pys` | Shows `Starting memcached`, `Created`, and `started`; overflow / “water is wasting” warnings happen only occasionally | A constant stream of warnings means the PLCs are not controlling the process. Restart using step 2.1 |
+| `plc1` | No continuous `receive null value for tag` warnings | Restart using step 2.1 |
+| `plc2` | No `Traceback` | Restart using step 2.1 |
 
-Optional visual check (detach with **Ctrl+P, Ctrl+Q**, never Ctrl+C):
+Optional: attach to an HMI to check it visually. Detach with **Ctrl+P, Ctrl+Q**, not Ctrl+C.
+
 ```powershell
 docker attach hmi1
 ```
 
 ## 4. Find the capture interface
 
+Run:
+
 ```powershell
 docker run --rm --net=host nicolaka/netshoot ip -br addr | findstr 192.168.0
 ```
-Expected: `br_icsnet  UP  192.168.0.1/24 ...` → interface name is **`br_icsnet`**.
 
-## 5. Test capture (30 s)
+Expected output includes:
+
+```text
+br_icsnet  UP  192.168.0.1/24 ...
+```
+
+The interface name is **`br_icsnet`**.
+
+## 5. Test the capture (30 seconds)
+
+Capture a short test:
 
 ```powershell
 docker run --rm --net=host --cap-add NET_ADMIN -v C:\captures:/cap nicolaka/netshoot `
   timeout 30 tcpdump -i br_icsnet -w /cap/test.pcap
 ```
-Verify:
+
+Check that Modbus packets are in the capture:
+
 ```powershell
-# Modbus packets visible between 192.168.0.11/.12 and .21/.22/.23
+# Look for Modbus packets between 192.168.0.11/.12 and .21/.22/.23
 docker run --rm -v C:\captures:/cap nicolaka/netshoot tcpdump -nr /cap/test.pcap port 502 -c 20
 
-# Sessions (all / only those carrying Modbus)
+# Show TCP sessions (all, then only sessions carrying Modbus)
 docker run --rm -v C:\captures:/cap nicolaka/netshoot tshark -r /cap/test.pcap -q -z conv,tcp
 docker run --rm -v C:\captures:/cap nicolaka/netshoot tshark -r /cap/test.pcap -q -z "conv,tcp,mbtcp"
 
-# Requests vs responses (should be almost equal); x120 = per-hour transactions
+# Count requests and responses. The counts should be almost equal.
+# Multiply by 120 to estimate transactions per hour.
 docker run --rm -v C:\captures:/cap nicolaka/netshoot sh -c "tshark -r /cap/test.pcap -Y 'mbtcp && tcp.dstport==502' 2>/dev/null | wc -l"
 docker run --rm -v C:\captures:/cap nicolaka/netshoot sh -c "tshark -r /cap/test.pcap -Y 'mbtcp && tcp.srcport==502' 2>/dev/null | wc -l"
 ```
 
-## 6. Capture 1 — Benign (2 h)
+## 6. Capture benign traffic (2 hours)
 
-Wait 1–2 minutes after a healthy start, then:
+After the network is healthy, wait 1–2 minutes and start the capture:
+
 ```powershell
 docker run --rm --net=host --cap-add NET_ADMIN -v C:\captures:/cap nicolaka/netshoot `
   timeout 7200 tcpdump -i br_icsnet -w /cap/benign_2h.pcap
 ```
-Rules during the capture:
-* Keep the PowerShell window open and the PC awake.
-* **Do not** attach to or use `attacker`, `attackermachine`, `attackerremote`.
-* HMIs may be left alone (HMI2/HMI3 generate normal operator traffic).
-* Write the start time in the capture log (section 10).
 
-Verify after the capture:
+During the capture:
+
+- Keep the PowerShell window open and the PC awake.
+- **Do not** attach to or use `attacker`, `attackermachine`, or `attackerremote`.
+- You can leave the HMIs alone. HMI2 and HMI3 generate normal operator traffic.
+- Write down the capture start time in the log in step 10.
+
+After the capture, check it:
+
 ```powershell
 docker run --rm -v C:\captures:/cap nicolaka/netshoot capinfos /cap/benign_2h.pcap
 ```
-Duration should be ≈ 7200 s.
 
-## 7. Capture 2 — Mixed benign + attacks (~2 h)
+The duration should be about 7200 seconds.
 
-1. Restart the testbed fresh (section 2.1) and run the health checks (section 3).
-2. Start the capture:
+## 7. Capture benign and attack traffic (about 2 hours)
+
+1. Restart the testbed using step 2.1, then run steps 2.2, 2.3 (log folder) and 3 (health checks).
+2. **Clear any stale logs** from a previous run so old files are not mixed in:
+
+   ```powershell
+   docker exec attacker sh -c "rm -f ./logs/attack-logs/*"
+   ```
+
+3. Start the capture:
+
    ```powershell
    docker run --rm --net=host --cap-add NET_ADMIN -v C:\captures:/cap nicolaka/netshoot `
      timeout 7200 tcpdump -i br_icsnet -w /cap/mixed_2h.pcap
    ```
-3. In a **second** PowerShell window, attach to the attacker:
-   ```powershell
-   docker attach attacker
-   ```
-4. Launch attacks from the attacker menu **one at a time**, with ~10 min of normal traffic between them:
 
-   | Time (from capture start) | Action | MITRE ATT&CK for ICS |
+4. In a **second** PowerShell window, open the attacker menu. Use `docker exec` with a UTF-8 terminal, **not** `docker attach`. The interactive attacker exits (status `Exited (0)`) when its input stream closes, and `docker attach` can feed it bytes it cannot decode (`UnicodeDecodeError`), which kills the container mid-capture.
+
+   ```powershell
+   docker exec -it -e PYTHONIOENCODING=utf-8 attacker bash
+   ```
+
+   Inside the container, start the menu:
+
+   ```bash
+   ./start.sh Attacker.py
+   ```
+
+5. Choose attacks from the attacker menu, one at a time. Leave about 10 minutes of normal traffic between attacks. At each `press inter to continue` prompt, press **Enter only** (other keys can crash the menu).
+
+   | Time from capture start | Action | MITRE ATT&CK for ICS |
    |---|---|---|
    | 0–15 min | nothing (benign) | – |
-   | ~15 min | IP scan / port scan | T0846 |
-   | ~30 min | command injection | T0855 |
-   | ~45 min | DDoS | T0814 |
-   | ~60 min | MITM | T0830 |
-   | ~75 min | replay | T0831 |
-   | 75–120 min | nothing (benign) | – |
+   | ~15 min | port scan | T0846 |
+   | ~25 min | IP scan | T0846 |
+   | ~35 min | command injection | T0855 |
+   | ~50 min | DDoS | T0814 |
+   | ~65 min | MITM | T0830 |
+   | ~80 min | replay | T0831 |
+   | 80–120 min | nothing (benign) | – |
 
-   Detach with **Ctrl+P, Ctrl+Q**. Note each attack's wall-clock start/end in the capture log as a backup.
-5. Collect the attacker's log (contains exact `startStamp` / `endStamp`):
+   As a backup, write down each attack’s wall-clock start and end times in the capture log. When finished, type `exit` to leave the container (the menu session ends and the `attacker` container stops — this is expected).
+
+6. **Verify each attack actually produced traffic before moving on.** MITM and replay only work when the attacker sits between two nodes that are actively talking, and they can otherwise log `Changed 0 packets` or `Sniffed 0 packets` — meaning nothing malicious entered the PCAP even though the window is labelled. For MITM/replay, pick a victim pair with live traffic, such as HMI1 (`192.168.0.21`) and PLC1 (`192.168.0.11`), and give the attack a long enough window. Check the per-attack log reports a non-zero count:
+
    ```powershell
-   docker exec attacker sh -c "find / -name '*.csv' -path '*log*' 2>/dev/null"
-   docker cp attacker:<path_from_above> C:\captures\attack_log.csv
+   docker exec attacker sh -c "cat ./logs/attack-logs/log-mitm-scapy.txt"
+   docker exec attacker sh -c "cat ./logs/attack-logs/log-replay-scapy.txt"
    ```
-   Check that every `startStamp`/`endStamp` lies inside the capture time range (`capinfos`).
 
-## 8. Convert to CSV
+7. Get the attacker’s ground-truth log and the per-attack logs. The summary CSV (`attacker_summary.csv`) has the columns the converter needs: `attack, startStamp, endStamp, startTime, endTime, attackerMAC, attackerIP, description`.
 
-Benign capture (empty attack log with header only):
+   ```powershell
+   # copy the whole logs tree out of the container
+   docker cp attacker:/src/logs C:\captures\logs_mixed
+   # locate the summary and per-attack files
+   dir C:\captures\logs_mixed -Recurse
+   ```
+
+   Only the interactive `attacker` node (`.42`) writes a populated summary; `attackermachine` and `attackerremote` stay empty unless you drive them too. Copy the populated `attacker_summary.csv` to `C:\captures\attack_log.csv` for the converter, and confirm every `startStamp`/`endStamp` falls within the capture time range shown by `capinfos`.
+
+## 8. Convert the captures to CSV
+
+### Convert the benign capture
+
+Make an empty attack log with a header row:
+
 ```powershell
 "attack,startStamp,endStamp,startTime,endTime,attackerMAC,attackerIP,description" | Out-File -Encoding ascii C:\captures\empty_log.csv
+```
+
+Run the converter:
+
+```powershell
 python icssim_to_csv.py C:\captures\benign_2h.pcap C:\captures\empty_log.csv --out-dir C:\captures\benign --split-benign
 ```
-→ use `C:\captures\benign\benign_train.csv` for training.
 
-Mixed capture:
+Use `C:\captures\benign\benign_train.csv` for training.
+
+### Convert the mixed capture
+
 ```powershell
 python icssim_to_csv.py C:\captures\mixed_2h.pcap C:\captures\attack_log.csv --out-dir C:\captures\mixed
 ```
-→ `C:\captures\mixed\icssim_all.csv` for testing.
 
-CSV schema (one row per Modbus packet, request or response):
-```
+Use `C:\captures\mixed\icssim_all.csv` for testing.
+
+The CSV has one row per Modbus packet, request or response:
+
+```text
 ts, src_ip, dst_ip, func_code, start_addr, quantity, latency_ms, exception, label
 ```
 
-## 9. Validate the dataset
+## 9. Check the dataset
+
+Run:
 
 ```powershell
 python -c "import pandas as pd; d=pd.read_csv(r'C:\captures\mixed\icssim_all.csv'); print(d.shape); print(d.label.value_counts()); print(pd.concat([d.src_ip,d.dst_ip]).value_counts())"
 ```
-Checklist:
-* [ ] Benign CSV: all rows `benign`; IPs include `.11`, `.12`, `.21`, `.22`, `.23`.
-* [ ] Mixed CSV: label counts include attack labels (not only `benign`).
-* [ ] Attacker IPs appear in the mixed CSV (command injection, DDoS).
-* [ ] `benign_train.csv` and `icssim_all.csv` are **not** identical (`Get-FileHash`).
 
-Known converter limitations:
-* **Scans** (SYN probes, ARP) carry no Modbus payload → not in the CSV (still in the PCAP).
-* **MITM** (and possibly replay) keep the original PLC/HMI IPs → label by attacker MAC (`nodes.txt`), not IP.
-* For responses, `start_addr`/`quantity` are not real fields (FC3 responses carry register data) — parse them for requests only.
+Check that:
 
-## 10. Capture log (fill in for every capture)
+- [ ] All rows in the benign CSV have the label `benign`.
+- [ ] The benign CSV has IPs `.11`, `.12`, `.21`, `.22`, and `.23`.
+- [ ] The mixed CSV has attack labels, not just `benign`.
+- [ ] Attacker IP (`192.168.0.42`) appears in the mixed CSV for command injection and DDoS.
+- [ ] `benign_train.csv` and `icssim_all.csv` are not identical. Check with `Get-FileHash`.
+
+### Converter limitations
+
+- **Scans:** port scans (SYN probes) and IP scans (ARP) have no Modbus payload, so they are not in the CSV. They are still in the PCAP. The scan windows are in `attacker_summary.csv` if you need them.
+- **MITM and replay:** these keep the original PLC/HMI IPs, so the converter’s IP match does not catch them. Label these by the attacker **MAC** from `nodes.txt` / `attacker_summary.csv`, not by IP. Also confirm they captured non-zero packets (step 7.6) — otherwise the window has no attack traffic to detect.
+- **Command injection:** make sure the attacker log folder exists (step 2.3) before running it, or the attack is not logged.
+- **Responses:** `start_addr` and `quantity` are not real fields in responses. FC3 responses carry register data, so parse these fields for requests only.
+
+## 10. Keep a capture log
+
+Fill this in for every capture:
 
 | File | Date | Start (local) | End (local) | Duration (s) | Packets (`capinfos`) | Notes / attacks |
 |---|---|---|---|---|---|---|
@@ -345,12 +485,18 @@ docker compose down
 
 ## Troubleshooting
 
-| Symptom | Cause | Fix |
+| Problem | Cause | Fix |
 |---|---|---|
-| `PLC2 ... TypeError: 'NoneType' object is not subscriptable` | PLCs started before `pys` | Restart with section 2.1 |
-| `pys` floods "bottle water overflowed" | PLC2 crashed / PLC1 gets null values | Restart with section 2.1 |
-| `WinError 10049` when running `start.py` | Docker IPs used in local mode | Use Docker mode for capture |
-| No `br_icsnet` in step 4 | Network not created / different name | `docker network inspect icsnet` |
-| CSV has only `benign` in mixed run | Attacks not in capture window or wrong log | Check `capinfos` vs `attack_log.csv` timestamps |
-| Converter very slow / out of memory | `rdpcap` loads whole PCAP | Use `PcapReader` (section 1.6) |
-| `"clear" ist entweder falsch geschrieben` | Linux `clear` on Windows (local mode only) | `os.system('cls' if os.name == 'nt' else 'clear')` |
+| `PLC2 ... TypeError: 'NoneType' object is not subscriptable` | PLCs started before `pys` | Restart using step 2.1 |
+| `pys` repeatedly shows “bottle water overflowed” | PLC2 crashed or PLC1 gets null values | Restart using step 2.1 |
+| `WinError 10049` when running `start.py` | Docker IPs are being used in local mode | Use Docker mode for capture |
+| `no configuration file provided: not found` | `docker compose` run outside `deployments` | `cd` into `ICSSIM\deployments` first |
+| `attacker` shows `Exited (0)` | Interactive menu ended or input stream closed | Restart with `docker compose up -d attacker`, then use `docker exec` (step 7.4) |
+| `UnicodeDecodeError ... 'utf-8' codec can't decode` in the attacker | `docker attach` sent undecodable bytes to `input()` | Use `docker exec -it -e PYTHONIOENCODING=utf-8 attacker bash`; press Enter only |
+| `chmod: cannot access './logs/attack-logs/...': No such file` | Log folder missing | Create it with step 2.3 before running attacks |
+| MITM/replay log says `Changed 0 packets` / `Sniffed 0 packets` | No live traffic between the chosen victims, or window too short | Target a busy pair (e.g. `.21` ↔ `.11`) and lengthen the window (step 7.6) |
+| Per-attack log has an old date | Stale file from a previous run | Clear the folder first (step 7.2) |
+| `br_icsnet` is missing in step 4 | The network was not created or has a different name | Run `docker network inspect icsnet` |
+| Mixed-run CSV has only `benign` labels | Attacks were outside the capture window or the wrong log was used | Check `capinfos` against the `attacker_summary.csv` timestamps |
+| Converter is very slow or runs out of memory | `rdpcap` loads the whole PCAP | Use `PcapReader` as shown in step 1.6 |
+| `"clear" ist entweder falsch geschrieben` | Linux `clear` was used on Windows (local mode only) | Use `os.system('cls' if os.name == 'nt' else 'clear')` |
