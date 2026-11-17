@@ -1,10 +1,28 @@
 # ICSSIM
-This is the ICSSIM source code and user manual for simulating industrial control system testbed for cybersecurity experiments.
+## Credits & Citation
+This project is based on the ICSSIM framework and its sample bottle-filling
+testbed, created by Alireza Dehlaghi-Ghadim, Ali Balador, Mahshid Helali
+Moghadam, Hans Hansson, and Mauro Conti.
 
-The ICSSIM framework enables cyber threats and attacks to be investigated and mitigated by building a virtual ICS security testbed customized to suit their needs. As ICSSIM runs on separate private operating system kernels, it provides realistic network emulation and runs ICS components on Docker container technology.
+- Original repository: https://github.com/AlirezaDehlaghi/ICSSIM
+- Paper: A. Dehlaghi-Ghadim, A. Balador, M. Helali Moghadam, H. Hansson,
+  and M. Conti, "ICSSIM — A framework for building industrial control systems
+  security testbeds," *Computers in Industry*, vol. 148, 103906, 2023.
+  https://doi.org/10.1016/j.compind.2023.103906
 
-ICSSIM can also be used to simulate any other open-loop controlling process, such as bottle filling, and allows us to build a testbed for any open-loop controlling process.
+If you use this work, please cite the original paper:
 
+```bibtex
+@article{DehlaghiGhadim2023ICSSIM,
+  title   = {ICSSIM — A framework for building industrial control systems security testbeds},
+  author  = {Dehlaghi-Ghadim, Alireza and Balador, Ali and Helali Moghadam, Mahshid and Hansson, Hans and Conti, Mauro},
+  journal = {Computers in Industry},
+  volume  = {148},
+  pages   = {103906},
+  year    = {2023},
+  doi     = {10.1016/j.compind.2023.103906}
+}
+```
 # Sample Bottle Filling Factory
 A water tank repository is used to fill bottles during the bottle-filling factory control process. The below figure shows the overall scenario including process and hardware. The proposed control process consists of two main hardware zones, each managed by a standalone PLC, called PLC-1 and PLC-2. The water tank and valves are controlled by PLC-1. The conveyor belts are controlled by PLC-2 to switch out filled bottles with empty ones.
 
